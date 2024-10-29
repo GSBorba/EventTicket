@@ -12,6 +12,9 @@ WORKDIR /app
 # Executa o build, pulando os testes
 RUN mvn clean install -DskipTests
 
+# Verifica o conteúdo do diretório target
+RUN ls -la target
+
 # Cria a imagem final
 FROM openjdk:21-jdk-slim
 WORKDIR /app
@@ -20,7 +23,7 @@ WORKDIR /app
 EXPOSE 8080
 
 # Copia o JAR gerado para a nova imagem
-COPY --from=build ./target/ticket-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/ticket-0.0.1-SNAPSHOT.jar app.jar
 
 # Define o comando para executar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
