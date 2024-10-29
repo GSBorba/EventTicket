@@ -13,13 +13,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.net.URI;
 import java.util.UUID;
 
@@ -39,14 +41,18 @@ public class IngressoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DadosIngresso> cadastro(@RequestBody DadosCadastroIngresso dados, UriComponentsBuilder uriBuilder) throws IOException, WriterException {
+    public ResponseEntity<byte[]> cadastro(@RequestBody DadosCadastroIngresso dados, UriComponentsBuilder uriBuilder) throws IOException, WriterException {
         Ingresso ingresso = service.validaCadastro(dados);
 
         URI uri = uriBuilder.path("Ingresso/{id}").buildAndExpand(ingresso.getId()).toUri();
 
-        generateQRCode(uri.toString(), "QRCode_" + ingresso.getId() + ".png");
+        // Gerar o QR code como array de bytes
+        byte[] qrCodeImage = generateQRCode(uri.toString());
 
-        return ResponseEntity.created(uri).body(new DadosIngresso(ingresso));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+
+        return new ResponseEntity<>(qrCodeImage, headers, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -63,12 +69,14 @@ public class IngressoController {
         return ResponseEntity.ok(new DadosIngresso(ingresso));
     }
 
-    private void generateQRCode(String text, String filePath) throws WriterException, IOException {
+    private byte[] generateQRCode(String text) throws WriterException, IOException {
         int width = 300;
         int height = 300;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-        Path path = FileSystems.getDefault().getPath(filePath);
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        return pngOutputStream.toByteArray();
     }
 }
