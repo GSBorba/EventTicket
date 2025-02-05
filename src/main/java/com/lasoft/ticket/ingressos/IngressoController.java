@@ -62,6 +62,13 @@ public class IngressoController {
         return ResponseEntity.ok(ingresso);
     }
 
+    @GetMapping("/id")
+    public ResponseEntity<DadosIngresso> buscaPeloID(@PathVariable UUID id) {
+        Ingresso ingresso = repository.getReferenceById(id);
+
+        return ResponseEntity.ok(new DadosIngresso(ingresso));
+    }
+
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DadosIngresso> marcarEntrada(@PathVariable UUID id) {
