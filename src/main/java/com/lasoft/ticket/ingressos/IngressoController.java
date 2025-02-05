@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://67a3c2d93457fb0008fac2a5--test-frontend-ticket-event.netlify.app"})
 @RestController
 @RequestMapping("ingresso")
 public class IngressoController {
