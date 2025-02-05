@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("ingresso")
 public class IngressoController {
