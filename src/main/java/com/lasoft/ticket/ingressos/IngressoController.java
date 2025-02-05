@@ -62,7 +62,7 @@ public class IngressoController {
         return ResponseEntity.ok(ingresso);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<DadosIngresso> buscaPeloID(@PathVariable UUID id) {
         Ingresso ingresso = repository.getReferenceById(id);
 
