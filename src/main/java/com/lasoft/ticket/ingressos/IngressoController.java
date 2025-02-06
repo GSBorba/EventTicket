@@ -2,6 +2,7 @@ package com.lasoft.ticket.ingressos;
 
 import com.lasoft.ticket.ingressos.dtos.DadosCadastroIngresso;
 import com.lasoft.ticket.ingressos.dtos.DadosIngresso;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,13 +43,22 @@ public class IngressoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<byte[]> cadastro(@RequestBody DadosCadastroIngresso dados, UriComponentsBuilder uriBuilder) throws IOException, WriterException {
+    public ResponseEntity<byte[]> cadastro(@RequestBody DadosCadastroIngresso dados, HttpServletRequest request) throws IOException, WriterException {
         Ingresso ingresso = service.validaCadastro(dados);
 
-        URI uri = uriBuilder.path("Ingresso/{id}").buildAndExpand(ingresso.getId()).toUri();
+        // Obter a URL da aplicação web que fez a requisição
+        String refererUrl = request.getHeader("Referer");
 
-        // Gerar o QR code como array de bytes
-        byte[] qrCodeImage = generateQRCode(uri.toString());
+        // Se o Referer não estiver presente, use um valor padrão ou lance uma exceção
+        if (refererUrl == null) {
+            refererUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; // Fallback ou trate como erro
+        }
+
+        // Construir a URL completa com o caminho /ingresso/{id}
+        String urlCompleta = refererUrl + "/ingresso/" + ingresso.getId();
+
+        // Gerar o QR code com a URL completa
+        byte[] qrCodeImage = generateQRCode(urlCompleta);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
