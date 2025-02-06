@@ -55,7 +55,7 @@ public class IngressoController {
         }
 
         // Construir a URL completa com o caminho /ingresso/{id}
-        String urlCompleta = refererUrl + "/ingresso/" + ingresso.getId();
+        String urlCompleta = refererUrl + "ingresso/" + ingresso.getId();
 
         // Gerar o QR code com a URL completa
         byte[] qrCodeImage = generateQRCode(urlCompleta);
