@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.UUID;
 
 @CrossOrigin(origins = "*")
