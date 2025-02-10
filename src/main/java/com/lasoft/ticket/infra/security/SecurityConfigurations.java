@@ -37,6 +37,7 @@ public class SecurityConfigurations {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/ingresso", "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/evento", "/venda").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -58,13 +59,14 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); // Permite todas as origens
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
-        configuration.setAllowedHeaders(Arrays.asList("*")); // Headers permitidos
-        configuration.setAllowCredentials(true); // Permite credenciais (cookies, headers de autenticação, etc.)
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://eventticket-b7io.onrender.com")); // Defina explicitamente as origens permitidas
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true); // Só defina como true se necessário!
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplica a configuração para todos os endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
