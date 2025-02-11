@@ -59,7 +59,8 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://eventticket-b7io.onrender.com")); // Defina explicitamente as origens permitidas
+        configuration.addExposedHeader("Access-Control-Allow-Origin");
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://eventticket-b7io.onrender.com", "https://test-frontend-ticket-event.netlify.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true); // Só defina como true se necessário!

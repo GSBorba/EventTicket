@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://test-frontend-ticket-event.netlify.app"})
 @RestController
 @RequestMapping("evento")
 public class EventoController {
